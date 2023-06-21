@@ -1,6 +1,9 @@
 {
   "name": "otaku-crawler",
   "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
