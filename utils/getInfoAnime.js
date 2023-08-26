@@ -89,6 +89,13 @@ const getInfoAnime = async (url) => {
 
     $("#venkonten > div.venser > div:nth-child(8) > ul > li").each(
       (i, element) => {
+        let uploadedOn = $(element).find(".zeebr").text();
+        
+        try {
+          uploadedOn = new Date(uploadedOn).toISOString().slice(0, 19).replace('T', ' ').replace(/\//gm, "-").replace(/\,/gm, "");
+        } catch (e) {
+          uploadedOn = new Date().toISOString().slice(0, 19).replace('T', ' ').replace(/\//gm, "-").replace(/\,/gm, "");
+        }
         const dataList = {
           title: $(element).find("span > a").text(),
           id: $(element)
@@ -96,7 +103,7 @@ const getInfoAnime = async (url) => {
             .attr("href")
             .replace(`${baseURL}`, ""),
           link: $(element).find("span > a").attr("href"),
-          uploaded_on: $(element).find(".zeebr").text(),
+          uploaded_on: uploadedOn,
         };
         episode_list.push(dataList);
       }
@@ -117,7 +124,13 @@ const getInfoAnime = async (url) => {
     /* return */
     return false;
   }
-  //console.log(result);
+  
+  try {
+    result.release_date = new Date(result.release_date).toISOString().slice(0, 19).replace('T', ' ').replace(/\//gm, "-").replace(/\,/gm, "");
+  } catch (e) {
+    result.release_date = new Date().toISOString().slice(0, 19).replace('T', ' ').replace(/\//gm, "-").replace(/\,/gm, "");
+  }
+  
   return result;
 };
 

@@ -3,14 +3,20 @@ const fs = require("fs");
 const getAnimeList = require("./utils/getAnimeList");
 const getInfoAnime = require("./utils/getInfoAnime");
 const getLinkDownloads = require("./utils/getLinkDownloads");
+const getDetailsEpisode = require("./utils/getDetailsEpisode");
 
 function save (data) {
-  let content = JSON.stringify(data, null, 2);
-  let path_output = "./data";
-  let pathFile = "./data/result.json";
-  
-  if (!fs.existsSync(path_output)) fs.mkdirSync(path_output, { recursive: true });
-  fs.writeFileSync(pathFile, JSON.stringify(data, null, 2));
+  try {
+    let content = JSON.stringify(data, null, 2);
+    let path_output = "./data";
+    let pathFile = "./data/result.json";
+    
+    if (!fs.existsSync(path_output)) fs.mkdirSync(path_output, { recursive: true });
+    fs.writeFileSync(pathFile, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.log({ err, data, e: data[0].episode_list[0].details });
+    process.exit();
+  }
 }
 
 ( async () => {
@@ -27,7 +33,9 @@ function save (data) {
     };
     for (let i = 0; i < episode_list.length; i++) {
       let episode = episode_list[i];
+      
       information.episode_list[i].link_downloads = await getLinkDownloads(episode.link);
+      information.episode_list[i].details = await getDetailsEpisode(episode.link);
     }
     
     result.push(information);
